@@ -449,8 +449,8 @@
             } else {
                 const endpoint =
                     action === 'login'
-                        ? '/api/login'
-                        : '/api/signup';
+                        ? 'https://portal.eagle-pro.co.za/api/login'
+                        : 'https://portal.eagle-pro.co.za/api/signup';
 
                 const response = await fetch(endpoint, {
                     method: 'POST',
