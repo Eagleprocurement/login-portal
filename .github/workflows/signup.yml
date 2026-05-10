@@ -1,0 +1,30 @@
+name: Signup User
+
+on:
+  workflow_dispatch:
+    inputs:
+      username:
+        required: true
+      password:
+        required: true
+
+jobs:
+  signup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install googleapis
+
+      - run: echo '${{ secrets.GOOGLE_CREDENTIALS }}' > credentials.json
+
+      - name: Run signup
+        run: node signup.js
+        env:
+          USERNAME: ${{ github.event.inputs.username }}
+          PASSWORD: ${{ github.event.inputs.password }}
