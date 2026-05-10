@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Login & Dashboard</title>
+    <style>
+        /* Modern CSS Reset & Variables */
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --danger: #ef4444;
+            --border-color: #e5e7eb;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- Login Form Styles --- */
+        #login-container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .login-header h2 {
+            margin-bottom: 8px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .login-header p {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        #login-error {
+            color: var(--danger);
+            font-size: 14px;
+            margin-top: 12px;
+            display: none;
+            background-color: #fee2e2;
+            padding: 8px;
+            border-radius: var(--radius-md);
+        }
+
+        .hint {
+            margin-top: 24px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: left;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1px dashed var(--border-color);
+        }
+
+        /* --- Dashboard Styles --- */
+        #dashboard-container {
+            display: none; /* Hidden by default */
+            width: 100%;
+            max-width: 900px;
+            background-color: transparent;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--card-bg);
+            padding: 20px 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .user-details h2 {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .user-details p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            background-color: #f1f5f9;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+
+        .widget {
+            background-color: var(--card-bg);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .widget h3 {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .widget .stat {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* --- New Styles for Auth Portal --- */
+        #auth-container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        #signup-view { display: none; }
+        
+        .toggle-link {
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        .toggle-link a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .toggle-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .btn-content { display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .loader {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .dashboard-header {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+            .user-info {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- AUTH SCREEN -->
+    <div id="auth-container">
+        <!-- LOGIN VIEW -->
+        <div id="login-view">
+            <div class="login-header">
+                <h2>Welcome Back</h2>
+                <p>Sign in to access your dashboard</p>
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" placeholder="Enter username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter password" required>
+                </div>
+                
+                <button type="submit" class="btn" id="login-btn">
+                    <span class="btn-content"><span class="loader" id="login-loader"></span> Sign In</span>
+                </button>
+                <div id="login-error" class="error-msg" style="color: #ef4444; font-size: 14px; margin-top: 12px; display: none;"></div>
+            </form>
+
+            <div class="toggle-link">
+                Don't have an account? <a onclick="toggleAuthView('signup')">Sign Up</a>
+            </div>
+            
+            <div class="hint">
+                <strong>Demo Mode Enabled</strong><br>
+                Try signing up, or switch <code>USE_MOCK_API</code> to <code>false</code> to use your Google Sheets endpoint.
+            </div>
+        </div>
+
+        <!-- SIGN UP VIEW -->
+        <div id="signup-view">
+            <div class="login-header">
+                <h2>Create Account</h2>
+                <p>Register to get started</p>
+            </div>
+            
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" placeholder="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="signup-username">Username</label>
+                    <input type="text" id="signup-username" placeholder="Choose a username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="Create a password" required minlength="6">
+                </div>
+                
+                <button type="submit" class="btn" id="signup-btn">
+                    <span class="btn-content"><span class="loader" id="signup-loader"></span> Create Account</span>
+                </button>
+                <div id="signup-error" style="color: #ef4444; font-size: 14px; margin-top: 12px; display: none;"></div>
+                <div id="signup-success" style="color: #10b981; font-size: 14px; margin-top: 12px; display: none;">Account created successfully! You can now log in.</div>
+            </form>
+
+            <div class="toggle-link">
+                Already have an account? <a onclick="toggleAuthView('login')">Sign In</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-container" style="display: none;">
+        <div class="dashboard-header">
+            <div class="user-info">
+                <div class="avatar" id="dash-avatar">U</div>
+                <div class="user-details">
+                    <h2 id="dash-name">User Name</h2>
+                    <p id="dash-role">Member</p>
+                </div>
+            </div>
+            <button id="logout-btn" class="btn-outline">Log Out</button>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="widget">
+                <h3>Account Status</h3>
+                <div class="stat" id="dash-stat1" style="color: #10b981;">Active</div>
+            </div>
+            <div class="widget">
+                <h3>Username</h3>
+                <div class="stat" id="dash-stat2" style="font-size: 24px;">-</div>
+            </div>
+            <div class="widget">
+                <h3>Join Date</h3>
+                <div class="stat" id="dash-stat3" style="font-size: 20px;">-</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // API CONFIGURATION
+        // ==========================================
+        const USE_MOCK_API = false;
+
+        // Fallback Local Database (used when USE_MOCK_API is true)
+        let localMockDB = {
+            'admin': { password: 'pass', name: 'Admin User', role: 'Super Admin', joined: new Date().toLocaleDateString() }
+        };
+
+        // ==========================================
+        // DOM Elements & View Switching
+        // ==========================================
+        const authContainer = document.getElementById('auth-container');
+        const loginView = document.getElementById('login-view');
+        const signupView = document.getElementById('signup-view');
+        const dashboardContainer = document.getElementById('dashboard-container');
+        
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        
+        window.toggleAuthView = function(view) {
+            if (view === 'login') {
+                signupView.style.display = 'none';
+                loginView.style.display = 'block';
+            } else {
+                loginView.style.display = 'none';
+                signupView.style.display = 'block';
+            }
+            document.getElementById('login-error').style.display = 'none';
+            document.getElementById('signup-error').style.display = 'none';
+            document.getElementById('signup-success').style.display = 'none';
+        };
+
+        // ==========================================
+        // Core API Function
+        // ==========================================
+        async function callDatabaseAPI(action, payload) {
+            if (USE_MOCK_API) {
+                // Simulate network delay for UI feedback
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                if (action === 'signup') {
+                    if (localMockDB[payload.username]) {
+                        throw new Error('Username already exists');
+                    }
+                    localMockDB[payload.username] = {
+                        password: payload.password,
+                        name: payload.name,
+                        role: 'Member',
+                        joined: new Date().toLocaleDateString()
+                    };
+                    return {
+                        success: true
+                    };
+                } else if (action === 'login') {
+                    const user = localMockDB[payload.username];
+                    if (
+                        user &&
+                        user.password === payload.password
+                    ) {
+                        return {
+                            success: true,
+                            data: {
+                                username: payload.username,
+                                name: user.name,
+                                role: user.role,
+                                joined: user.joined
+                            }
+                        };
+                    }
+                    throw new Error('Invalid username or password');
+                }
+            } else {
+                const endpoint =
+                    action === 'login'
+                        ? '/api/login'
+                        : '/api/signup';
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.error ||
+                        'Request failed'
+                    );
+                }
+
+                return data;
+            }
+        }
+
+        // ==========================================
+        // Form Handlers
+        // ==========================================
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('login-btn');
+            const loader = document.getElementById('login-loader');
+            const errorDiv = document.getElementById('login-error');
+            
+            const username = document.getElementById('login-username').value.trim().toLowerCase();
+            const password = document.getElementById('login-password').value;
+
+            btn.disabled = true;
+            loader.style.display = 'inline-block';
+            errorDiv.style.display = 'none';
+
+            try {
+                const response = await callDatabaseAPI('login', { username, password });
+                
+                if (response.success) {
+                    loginForm.reset();
+                    showDashboard({
+                        username,
+                        name: username,
+                        role: response.role || 'Member',
+                        joined: new Date().toLocaleDateString()
+                    });
+                }
+            } catch (err) {
+                errorDiv.textContent = err.message;
+                errorDiv.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                loader.style.display = 'none';
+            }
+        });
+
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('signup-btn');
+            const loader = document.getElementById('signup-loader');
+            const errorDiv = document.getElementById('signup-error');
+            const successDiv = document.getElementById('signup-success');
+            
+            const name = document.getElementById('signup-name').value;
+            const username = document.getElementById('signup-username').value.trim().toLowerCase();
+            const password = document.getElementById('signup-password').value;
+
+            btn.disabled = true;
+            loader.style.display = 'inline-block';
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            try {
+                const response = await callDatabaseAPI('signup', { name, username, password });
+                if (response.success) {
+                    signupForm.reset();
+                    successDiv.style.display = 'block';
+                    setTimeout(() => toggleAuthView('login'), 2000); // Auto-switch to login
+                }
+            } catch (err) {
+                errorDiv.textContent = err.message;
+                errorDiv.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                loader.style.display = 'none';
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            dashboardContainer.style.display = 'none';
+            authContainer.style.display = 'block';
+            toggleAuthView('login');
+        });
+
+        function showDashboard(userData) {
+            document.getElementById('dash-avatar').textContent = userData.name.charAt(0).toUpperCase();
+            document.getElementById('dash-name').textContent = userData.name;
+            document.getElementById('dash-role').textContent = userData.role || 'Member';
+            document.getElementById('dash-stat2').textContent = userData.username;
+            document.getElementById('dash-stat3').textContent = userData.joined || new Date().toLocaleDateString();
+
+            authContainer.style.display = 'none';
+            dashboardContainer.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
