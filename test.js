@@ -13,7 +13,7 @@ async function main() {
     auth: client
   });
 
-  const spreadsheetId = 'YOUR_SHEET_ID';
+  const spreadsheetId = '1cvYZUGpXwrHYvuCk4QR5c-vJgXtUi01f1rh60uZ0_Hk';
 
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
