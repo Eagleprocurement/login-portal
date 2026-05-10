@@ -3,22 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Login & Dashboard</title>
+    <title>Eagle Pro Portal | Login & Dashboard</title>
     <style>
         /* Modern CSS Reset & Variables */
         :root {
             --primary-color: #4f46e5;
             --primary-hover: #4338ca;
-            --bg-color: #f3f4f6;
+            --secondary-color: #312e81;
+            --bg-color: #f8fafc;
+            --sidebar-bg: #ffffff;
             --card-bg: #ffffff;
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
             --danger: #ef4444;
-            --border-color: #e5e7eb;
-            --radius-md: 8px;
-            --radius-lg: 12px;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --border-color: #e2e8f0;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         * {
@@ -28,70 +35,186 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: var(--font-sans);
             background-color: var(--bg-color);
             color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- Full Page Split Layout for Auth --- */
+        #auth-wrapper {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* Left Side: Information & Branding */
+        .auth-info-section {
+            flex: 1.2;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 60px 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative background elements */
+        .auth-info-section::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .auth-info-section::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .auth-info-content {
+            position: relative;
+            z-index: 10;
+            max-width: 600px;
+        }
+
+        .brand-logo {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .auth-info-content h1 {
+            font-size: 48px;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .auth-info-content p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 24px;
+        }
+
+        .feature-list {
+            margin-top: 40px;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .feature-list svg {
+            width: 20px;
+            height: 20px;
+            color: #818cf8;
+        }
+
+        /* Right Side: Form Container */
+        .auth-form-section {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        /* --- Login Form Styles --- */
-        #login-container {
             background-color: var(--card-bg);
             padding: 40px;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
+        }
+
+        #auth-container {
             width: 100%;
-            max-width: 400px;
-            text-align: center;
-            transition: all 0.3s ease;
+            max-width: 420px;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .login-header h2 {
             margin-bottom: 8px;
-            font-size: 24px;
-            font-weight: 600;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
         }
 
         .login-header p {
             color: var(--text-muted);
-            margin-bottom: 24px;
-            font-size: 14px;
+            margin-bottom: 32px;
+            font-size: 15px;
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             text-align: left;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
+            color: var(--text-main);
         }
 
         .form-group input {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border-color);
+            padding: 12px 16px;
+            border: 1.5px solid var(--border-color);
             border-radius: var(--radius-md);
-            font-size: 16px;
+            font-size: 15px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s ease;
+            background-color: #f8fafc;
+            color: var(--text-main);
         }
 
         .form-group input:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
         }
 
         .btn {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background-color: var(--primary-color);
             color: white;
             border: none;
@@ -99,277 +222,812 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
         }
 
         .btn:hover {
             background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.3);
+        }
+        
+        .btn:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
-        #login-error {
+        .error-msg {
             color: var(--danger);
             font-size: 14px;
-            margin-top: 12px;
-            display: none;
-            background-color: #fee2e2;
-            padding: 8px;
-            border-radius: var(--radius-md);
-        }
-
-        .hint {
-            margin-top: 24px;
-            font-size: 12px;
-            color: var(--text-muted);
-            text-align: left;
-            background: #f8fafc;
+            margin-top: 16px;
+            background-color: #fef2f2;
             padding: 12px;
             border-radius: var(--radius-md);
-            border: 1px dashed var(--border-color);
-        }
-
-        /* --- Dashboard Styles --- */
-        #dashboard-container {
-            display: none; /* Hidden by default */
-            width: 100%;
-            max-width: 900px;
-            background-color: transparent;
-        }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: var(--card-bg);
-            padding: 20px 30px;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            margin-bottom: 24px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .avatar {
-            width: 48px;
-            height: 48px;
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .user-details h2 {
-            font-size: 20px;
-            margin-bottom: 4px;
-        }
-
-        .user-details p {
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 8px 16px;
-            border-radius: var(--radius-md);
-            cursor: pointer;
+            border: 1px solid #fecaca;
+            display: none;
             font-weight: 500;
-            transition: all 0.2s;
         }
 
-        .btn-outline:hover {
-            background-color: #f1f5f9;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 24px;
-        }
-
-        .widget {
-            background-color: var(--card-bg);
-            padding: 24px;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-        }
-
-        .widget h3 {
-            font-size: 16px;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-        }
-
-        .widget .stat {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        /* --- New Styles for Auth Portal --- */
-        #auth-container {
-            background-color: var(--card-bg);
-            padding: 40px;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            transition: all 0.3s ease;
+        .success-msg {
+            color: var(--success);
+            font-size: 14px;
+            margin-top: 16px;
+            background-color: #ecfdf5;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid #a7f3d0;
+            display: none;
+            font-weight: 500;
         }
 
         #signup-view { display: none; }
         
         .toggle-link {
-            margin-top: 20px;
+            margin-top: 24px;
             font-size: 14px;
             color: var(--text-muted);
+            text-align: center;
         }
         .toggle-link a {
             color: var(--primary-color);
             font-weight: 600;
             text-decoration: none;
             cursor: pointer;
+            transition: color 0.2s;
         }
         .toggle-link a:hover {
+            color: var(--secondary-color);
             text-decoration: underline;
         }
-        
-        .btn-content { display: flex; justify-content: center; align-items: center; gap: 8px; }
+
+        /* Loader Animation */
+        .btn-content { display: flex; justify-content: center; align-items: center; gap: 10px; }
         .loader {
             display: none;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #ffffff;
-            border-bottom-color: transparent;
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255,255,255,0.3);
+            border-bottom-color: #ffffff;
             border-radius: 50%;
-            animation: rotation 1s linear infinite;
+            animation: rotation 0.8s linear infinite;
         }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Responsive */
-        @media (max-width: 600px) {
-            .dashboard-header {
-                flex-direction: column;
-                gap: 16px;
-                text-align: center;
-            }
-            .user-info {
-                flex-direction: column;
-            }
+
+        /* =========================================
+           COMPLEX DASHBOARD STYLES
+           ========================================= */
+        #dashboard-wrapper {
+            display: none; /* Hidden until login */
+            width: 100%;
+            height: 100vh;
+            background-color: var(--bg-color);
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            z-index: 50;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--secondary-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-links {
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+        }
+
+        .nav-item.active {
+            background-color: rgba(79, 70, 229, 0.1);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Sidebar Footer (User Profile) */
+        .sidebar-footer {
+            padding: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .user-profile-mini {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .user-info-text {
+            overflow: hidden;
+        }
+
+        .user-info-text h4 {
+            font-size: 14px;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-info-text p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Header */
+        .top-header {
+            height: 72px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--bg-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            width: 300px;
+            border: 1px solid transparent;
+            transition: border 0.2s;
+        }
+
+        .search-bar:focus-within {
+            border-color: var(--primary-color);
+            background-color: #fff;
+        }
+
+        .search-bar input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+            color: var(--text-main);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+
+        .icon-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            border: 2px solid var(--card-bg);
+        }
+
+        /* Dashboard Scrollable Area */
+        .dashboard-scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 32px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .btn-outline {
+            background-color: white;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        /* Grid Layout (Bento Box style) */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Metric Cards */
+        .metric-card {
+            grid-column: span 3;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .metric-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .metric-icon {
+            padding: 8px;
+            border-radius: 8px;
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .metric-trend {
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--danger); }
+
+        /* Chart Area */
+        .chart-card {
+            grid-column: span 8;
+            min-height: 350px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text-main);
+        }
+
+        .mock-chart {
+            flex: 1;
+            background: linear-gradient(180deg, rgba(79,70,229,0.05) 0%, rgba(255,255,255,0) 100%);
+            border-bottom: 1px dashed var(--border-color);
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .chart-svg {
+            width: 100%;
+            height: 80%;
+            overflow: visible;
+        }
+
+        .chart-path {
+            fill: none;
+            stroke: var(--primary-color);
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Activity Feed */
+        .activity-card {
+            grid-column: span 4;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .activity-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 12px;
+        }
+
+        .activity-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            margin-top: 6px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .activity-dot::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 4px;
+            width: 2px;
+            height: 35px;
+            background-color: var(--border-color);
+        }
+        
+        .activity-item:last-child .activity-dot::after {
+            display: none;
+        }
+
+        .activity-details h5 {
+            font-size: 14px;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .activity-details p {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .activity-time {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .metric-card { grid-column: span 6; }
+            .chart-card { grid-column: span 12; }
+            .activity-card { grid-column: span 12; }
+        }
+
+        @media (max-width: 900px) {
+            #auth-wrapper { flex-direction: column; }
+            .auth-info-section { padding: 40px 30px; flex: none; }
+            .auth-form-section { padding: 40px 20px; align-items: flex-start; }
+            
+            .sidebar { display: none; } /* Hide sidebar on mobile for now */
         }
     </style>
 </head>
 <body>
 
-    <!-- AUTH SCREEN -->
-    <div id="auth-container">
-        <!-- LOGIN VIEW -->
-        <div id="login-view">
-            <div class="login-header">
-                <h2>Welcome Back</h2>
-                <p>Sign in to access your dashboard</p>
-            </div>
-            
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="login-username">Username</label>
-                    <input type="text" id="login-username" placeholder="Enter username" required>
+    <!-- AUTH SCREEN SPLIT LAYOUT -->
+    <div id="auth-wrapper">
+        
+        <!-- Left Side: Platform Information -->
+        <div class="auth-info-section">
+            <div class="auth-info-content">
+                <div class="brand-logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    Eagle Pro Portal
                 </div>
                 
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" placeholder="Enter password" required>
-                </div>
+                <h1>The Future of Digital Workflow</h1>
                 
-                <button type="submit" class="btn" id="login-btn">
-                    <span class="btn-content"><span class="loader" id="login-loader"></span> Sign In</span>
-                </button>
-                <div id="login-error" class="error-msg" style="color: #ef4444; font-size: 14px; margin-top: 12px; display: none;"></div>
-            </form>
-
-            <div class="toggle-link">
-                Don't have an account? <a onclick="toggleAuthView('signup')">Sign Up</a>
-            </div>
-            
-            <div class="hint">
-                <strong>Demo Mode Enabled</strong><br>
-                Try signing up, or switch <code>USE_MOCK_API</code> to <code>false</code> to use your Google Sheets endpoint.
+                <p>Welcome to a comprehensive, event-driven platform designed to streamline operations and enhance your productivity. Our portal provides a secure, high-performance environment tailored for modern digital management.</p>
+                
+                <p>Built upon a robust serverless architecture, the Eagle Pro infrastructure ensures lightning-fast API responses, reliable data synchronization, and enterprise-grade data handling without the overhead of traditional systems.</p>
+                
+                <ul class="feature-list">
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        High Availability & Low Latency
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        Secure Automated Data Pipelines
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                        Seamless Systems Integration
+                    </li>
+                </ul>
             </div>
         </div>
 
-        <!-- SIGN UP VIEW -->
-        <div id="signup-view">
-            <div class="login-header">
-                <h2>Create Account</h2>
-                <p>Register to get started</p>
-            </div>
-            
-            <form id="signup-form">
-                <div class="form-group">
-                    <label for="signup-name">Full Name</label>
-                    <input type="text" id="signup-name" placeholder="John Doe" required>
+        <!-- Right Side: Forms -->
+        <div class="auth-form-section">
+            <div id="auth-container">
+                <!-- LOGIN VIEW -->
+                <div id="login-view">
+                    <div class="login-header">
+                        <h2>Welcome Back</h2>
+                        <p>Enter your credentials to access the portal</p>
+                    </div>
+                    
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-username">Username</label>
+                            <input type="text" id="login-username" placeholder="Enter your username" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" placeholder="Enter your password" required>
+                        </div>
+                        
+                        <button type="submit" class="btn" id="login-btn">
+                            <span class="btn-content"><span class="loader" id="login-loader"></span> Secure Sign In</span>
+                        </button>
+                        <div id="login-error" class="error-msg"></div>
+                    </form>
+
+                    <div class="toggle-link">
+                        Don't have access yet? <a onclick="toggleAuthView('signup')">Request an Account</a>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="signup-username">Username</label>
-                    <input type="text" id="signup-username" placeholder="Choose a username" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="signup-password">Password</label>
-                    <input type="password" id="signup-password" placeholder="Create a password" required minlength="6">
-                </div>
-                
-                <button type="submit" class="btn" id="signup-btn">
-                    <span class="btn-content"><span class="loader" id="signup-loader"></span> Create Account</span>
-                </button>
-                <div id="signup-error" style="color: #ef4444; font-size: 14px; margin-top: 12px; display: none;"></div>
-                <div id="signup-success" style="color: #10b981; font-size: 14px; margin-top: 12px; display: none;">Account created successfully! You can now log in.</div>
-            </form>
+                <!-- SIGN UP VIEW -->
+                <div id="signup-view">
+                    <div class="login-header">
+                        <h2>Create Account</h2>
+                        <p>Register to establish your portal identity</p>
+                    </div>
+                    
+                    <form id="signup-form">
+                        <div class="form-group">
+                            <label for="signup-name">Full Name</label>
+                            <input type="text" id="signup-name" placeholder="E.g., John Doe" required>
+                        </div>
 
-            <div class="toggle-link">
-                Already have an account? <a onclick="toggleAuthView('login')">Sign In</a>
+                        <div class="form-group">
+                            <label for="signup-username">Username</label>
+                            <input type="text" id="signup-username" placeholder="Choose a unique username" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signup-password">Password</label>
+                            <input type="password" id="signup-password" placeholder="Create a strong password" required minlength="6">
+                        </div>
+                        
+                        <button type="submit" class="btn" id="signup-btn">
+                            <span class="btn-content"><span class="loader" id="signup-loader"></span> Register Profile</span>
+                        </button>
+                        <div id="signup-error" class="error-msg"></div>
+                        <div id="signup-success" class="success-msg">Profile successfully registered! Redirecting to login...</div>
+                    </form>
+
+                    <div class="toggle-link">
+                        Already registered? <a onclick="toggleAuthView('login')">Return to Sign In</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- DASHBOARD SCREEN -->
-    <div id="dashboard-container" style="display: none;">
-        <div class="dashboard-header">
-            <div class="user-info">
-                <div class="avatar" id="dash-avatar">U</div>
-                <div class="user-details">
-                    <h2 id="dash-name">User Name</h2>
-                    <p id="dash-role">Member</p>
+    <!-- COMPLEX DASHBOARD SCREEN -->
+    <div id="dashboard-wrapper">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                Eagle Pro
+            </div>
+            
+            <nav class="nav-links">
+                <a class="nav-item active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Overview
+                </a>
+                <a class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+                    Analytics
+                </a>
+                <a class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    Team Members
+                </a>
+                <a class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                    System Monitors
+                </a>
+                <div style="flex:1;"></div>
+                <a class="nav-item" style="color: var(--text-muted);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    Settings
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile-mini">
+                    <div class="avatar" id="dash-avatar">U</div>
+                    <div class="user-info-text">
+                        <h4 id="dash-name">System User</h4>
+                        <p id="dash-username">@username</p>
+                    </div>
                 </div>
             </div>
-            <button id="logout-btn" class="btn-outline">Log Out</button>
-        </div>
+        </aside>
 
-        <div class="dashboard-grid">
-            <div class="widget">
-                <h3>Account Status</h3>
-                <div class="stat" id="dash-stat1" style="color: #10b981;">Active</div>
+        <!-- Main Workspace -->
+        <main class="main-content">
+            
+            <!-- Top Header Bar -->
+            <header class="top-header">
+                <div class="search-bar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; color: var(--text-muted);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" placeholder="Search infrastructure, logs, or users...">
+                </div>
+                
+                <div class="header-actions">
+                    <button class="icon-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                        <span class="notification-dot"></span>
+                    </button>
+                    <button id="logout-btn" class="btn-outline" style="border: none; padding: 6px 12px; background: #f1f5f9;">Sign Out</button>
+                </div>
+            </header>
+
+            <!-- Scrollable Dashboard Body -->
+            <div class="dashboard-scroll-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Platform Overview</h1>
+                        <p>Real-time metrics and system health indicators.</p>
+                    </div>
+                    <button class="btn-outline">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        Last 30 Days
+                    </button>
+                </div>
+
+                <div class="bento-grid">
+                    
+                    <!-- KPI Cards (Row 1) -->
+                    <div class="card metric-card">
+                        <div class="metric-header">
+                            <span class="metric-title">Total Requests</span>
+                            <div class="metric-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                            </div>
+                        </div>
+                        <div class="metric-value">124.5K</div>
+                        <div class="metric-trend trend-up">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                            +12.5% from last month
+                        </div>
+                    </div>
+
+                    <div class="card metric-card">
+                        <div class="metric-header">
+                            <span class="metric-title">Avg Response Time</span>
+                            <div class="metric-icon" style="background: #fef3c7; color: #d97706;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            </div>
+                        </div>
+                        <div class="metric-value">42ms</div>
+                        <div class="metric-trend trend-up">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                            Faster by 8ms
+                        </div>
+                    </div>
+
+                    <div class="card metric-card">
+                        <div class="metric-header">
+                            <span class="metric-title">Active Data Pipelines</span>
+                            <div class="metric-icon" style="background: #dcfce3; color: #15803d;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                            </div>
+                        </div>
+                        <div class="metric-value">18</div>
+                        <div class="metric-trend trend-up" style="color: var(--text-muted);">
+                            All systems operational
+                        </div>
+                    </div>
+
+                    <div class="card metric-card">
+                        <div class="metric-header">
+                            <span class="metric-title">Error Rate</span>
+                            <div class="metric-icon" style="background: #fee2e2; color: #b91c1c;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                            </div>
+                        </div>
+                        <div class="metric-value">0.12%</div>
+                        <div class="metric-trend trend-down">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>
+                            -0.05% vs yesterday
+                        </div>
+                    </div>
+
+                    <!-- Complex Content (Row 2) -->
+                    <div class="card chart-card">
+                        <h3 class="card-title">Network Traffic Analytics</h3>
+                        <div class="mock-chart">
+                            <svg class="chart-svg" viewBox="0 0 1000 200" preserveAspectRatio="none">
+                                <!-- Grid Lines -->
+                                <line x1="0" y1="50" x2="1000" y2="50" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4" />
+                                <line x1="0" y1="100" x2="1000" y2="100" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4" />
+                                <line x1="0" y1="150" x2="1000" y2="150" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4" />
+                                
+                                <!-- Mock Line Graph -->
+                                <path class="chart-path" d="M0 160 C 100 120, 200 180, 300 140 C 400 100, 500 150, 600 90 C 700 30, 800 120, 900 60 C 950 30, 1000 70, 1000 70"></path>
+                                
+                                <!-- Gradient Fill Under Path -->
+                                <path d="M0 160 C 100 120, 200 180, 300 140 C 400 100, 500 150, 600 90 C 700 30, 800 120, 900 60 C 950 30, 1000 70, 1000 70 L 1000 200 L 0 200 Z" fill="url(#gradient)" opacity="0.2" />
+                                
+                                <defs>
+                                    <linearGradient id="gradient" x1="0" x2="0" y1="0" y2="1">
+                                        <stop offset="0%" stop-color="var(--primary-color)"/>
+                                        <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="card activity-card">
+                        <h3 class="card-title">Recent System Activity</h3>
+                        <ul class="activity-list">
+                            <li class="activity-item">
+                                <div class="activity-dot"></div>
+                                <div class="activity-details">
+                                    <h5>Authentication Granted</h5>
+                                    <p>Secure login verified for <span id="log-username" style="font-weight: 600;">@user</span></p>
+                                    <span class="activity-time">Just now</span>
+                                </div>
+                            </li>
+                            <li class="activity-item">
+                                <div class="activity-dot" style="background-color: var(--success);"></div>
+                                <div class="activity-details">
+                                    <h5>Database Sync Completed</h5>
+                                    <p>Main Google Sheets cluster synchronized successfully.</p>
+                                    <span class="activity-time">12 minutes ago</span>
+                                </div>
+                            </li>
+                            <li class="activity-item">
+                                <div class="activity-dot" style="background-color: var(--warning);"></div>
+                                <div class="activity-details">
+                                    <h5>API Rate Limit Warning</h5>
+                                    <p>Node cluster Alpha approaching limits.</p>
+                                    <span class="activity-time">1 hour ago</span>
+                                </div>
+                            </li>
+                            <li class="activity-item">
+                                <div class="activity-dot" style="background-color: var(--text-muted);"></div>
+                                <div class="activity-details">
+                                    <h5>Worker Node Deployed</h5>
+                                    <p>Automated scaling triggered deployment of Node Beta.</p>
+                                    <span class="activity-time">3 hours ago</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
             </div>
-            <div class="widget">
-                <h3>Username</h3>
-                <div class="stat" id="dash-stat2" style="font-size: 24px;">-</div>
-            </div>
-            <div class="widget">
-                <h3>Join Date</h3>
-                <div class="stat" id="dash-stat3" style="font-size: 20px;">-</div>
-            </div>
-        </div>
+        </main>
     </div>
 
     <script>
@@ -386,25 +1044,33 @@
         // ==========================================
         // DOM Elements & View Switching
         // ==========================================
-        const authContainer = document.getElementById('auth-container');
+        const authWrapper = document.getElementById('auth-wrapper');
         const loginView = document.getElementById('login-view');
         const signupView = document.getElementById('signup-view');
-        const dashboardContainer = document.getElementById('dashboard-container');
+        const dashboardWrapper = document.getElementById('dashboard-wrapper');
         
         const loginForm = document.getElementById('login-form');
         const signupForm = document.getElementById('signup-form');
         
         window.toggleAuthView = function(view) {
-            if (view === 'login') {
-                signupView.style.display = 'none';
-                loginView.style.display = 'block';
-            } else {
-                loginView.style.display = 'none';
-                signupView.style.display = 'block';
-            }
-            document.getElementById('login-error').style.display = 'none';
-            document.getElementById('signup-error').style.display = 'none';
-            document.getElementById('signup-success').style.display = 'none';
+            // Add subtle fade animation
+            const container = document.getElementById('auth-container');
+            container.style.opacity = '0';
+            
+            setTimeout(() => {
+                if (view === 'login') {
+                    signupView.style.display = 'none';
+                    loginView.style.display = 'block';
+                } else {
+                    loginView.style.display = 'none';
+                    signupView.style.display = 'block';
+                }
+                document.getElementById('login-error').style.display = 'none';
+                document.getElementById('signup-error').style.display = 'none';
+                document.getElementById('signup-success').style.display = 'none';
+                
+                container.style.opacity = '1';
+            }, 200);
         };
 
         // ==========================================
@@ -422,7 +1088,7 @@
                     localMockDB[payload.username] = {
                         password: payload.password,
                         name: payload.name,
-                        role: 'Member',
+                        role: 'Authorized Member',
                         joined: new Date().toLocaleDateString()
                     };
                     return {
@@ -496,8 +1162,8 @@
                     loginForm.reset();
                     showDashboard({
                         username,
-                        name: username,
-                        role: response.role || 'Member',
+                        name: username, // Uses username as fallback if actual name is not returned
+                        role: response.role || 'Authorized Member',
                         joined: new Date().toLocaleDateString()
                     });
                 }
@@ -543,20 +1209,21 @@
         });
 
         document.getElementById('logout-btn').addEventListener('click', () => {
-            dashboardContainer.style.display = 'none';
-            authContainer.style.display = 'block';
+            dashboardWrapper.style.display = 'none';
+            authWrapper.style.display = 'flex';
             toggleAuthView('login');
         });
 
         function showDashboard(userData) {
+            // Update Dashboard User Details
             document.getElementById('dash-avatar').textContent = userData.name.charAt(0).toUpperCase();
             document.getElementById('dash-name').textContent = userData.name;
-            document.getElementById('dash-role').textContent = userData.role || 'Member';
-            document.getElementById('dash-stat2').textContent = userData.username;
-            document.getElementById('dash-stat3').textContent = userData.joined || new Date().toLocaleDateString();
+            document.getElementById('dash-username').textContent = '@' + userData.username;
+            document.getElementById('log-username').textContent = '@' + userData.username;
 
-            authContainer.style.display = 'none';
-            dashboardContainer.style.display = 'block';
+            // Toggle screens
+            authWrapper.style.display = 'none';
+            dashboardWrapper.style.display = 'flex';
         }
     </script>
 </body>
