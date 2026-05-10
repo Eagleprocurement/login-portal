@@ -1,40 +1,18 @@
-const { google } = require('googleapis');
-const fs = require('fs');
+export default function handler(req, res) {
+  if (req.method === 'POST') {
+    const { fullName, username, password } = req.body;
 
-async function signup() {
+    return res.status(200).json({
+      success: true,
+      message: 'Signup successful',
+      user: {
+        fullName,
+        username
+      }
+    });
+  }
 
-  const auth = new google.auth.GoogleAuth({
-    keyFile: 'credentials.json',
-    scopes: ['https://www.googleapis.com/auth/spreadsheets']
+  return res.status(405).json({
+    error: 'Method not allowed'
   });
-
-  const client = await auth.getClient();
-
-  const sheets = google.sheets({
-    version: 'v4',
-    auth: client
-  });
-
-  const spreadsheetId = '1cvYZUGpXwrHYvuCk4QR5c-vJgXtUi01f1rh60uZ0_Hk';
-
-  const username = process.env.USERNAME;
-  const password = process.env.PASSWORD;
-
-  const response = await sheets.spreadsheets.values.append({
-    spreadsheetId,
-    range: 'users!A:D',
-    valueInputOption: 'USER_ENTERED',
-    resource: {
-      values: [[
-        username,
-        password,
-        'member',
-        new Date().toISOString()
-      ]]
-    }
-  });
-
-  console.log('User added:', response.data);
 }
-
-signup();
