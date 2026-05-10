@@ -15,7 +15,7 @@ async function signup() {
     auth: client
   });
 
-  const spreadsheetId = 'YOUR_SHEET_ID';
+  const spreadsheetId = '1cvYZUGpXwrHYvuCk4QR5c-vJgXtUi01f1rh60uZ0_Hk';
 
   const username = process.env.USERNAME;
   const password = process.env.PASSWORD;
